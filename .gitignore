@@ -1,0 +1,26 @@
+# Ignore node modules
+node_modules/
+
+# Ignore environment variables
+.env
+
+# Ignore build output
+dist/
+build/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+.venv
+
+cyj/
+raw/
+
+*.jsonl
+*.json
+
