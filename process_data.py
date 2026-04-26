@@ -32,7 +32,7 @@ def whatsapp_to_messages(file_path, my_name, context_len=5, output_file=None):
         msg = all_messages[i]
         
         # 当说话人是你时，我们以此为结尾生成一条对话流
-        if msg["sender"] == my_name:
+        if msg["sender"] == my_name and msg["content"] != "You deleted this message" and msg["content"] != "This message was deleted":
             start_idx = max(0, i - context_len)
             window = all_messages[start_idx : i + 1] # 包含当前这一条
             
