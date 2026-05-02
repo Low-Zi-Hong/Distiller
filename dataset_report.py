@@ -2,7 +2,7 @@ import json
 
 lengths = []
 
-with open("my_distilled_data.jsonl", encoding="utf-8") as f:
+with open("dataset.jsonl", encoding="utf-8") as f:
     for line in f:
         data = json.loads(line)
         for msg in data["messages"]:

@@ -1,0 +1,1 @@
+start cmd.exe /k "F:\Appdata\Local\train\.venv\Scripts\activate"
