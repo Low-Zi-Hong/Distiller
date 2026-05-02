@@ -6,7 +6,7 @@ import os
 def main():
     parser = argparse.ArgumentParser(description="数字孪生 GGUF 导出脚本")
     # 默认指向你刚才训练保存的 LoRA 文件夹
-    parser.add_argument("--folder", type=str, default="my_lora_adapter", help="LoRA 适配器文件夹路径")
+    parser.add_argument("--folder", type=str, default="lora_model", help="LoRA 适配器文件夹路径")
     parser.add_argument("--output", type=str, default="final_model", help="导出的文件夹名称")
     args = parser.parse_args()
 
@@ -34,7 +34,7 @@ def main():
         model.save_pretrained_gguf(
             args.output, 
             tokenizer, 
-            quantization_method = "q4_k_m" 
+            quantization_method = "q8_0" # q4_k_m, q5_k_m, q8_0
         )
         print(f"✅ 导出成功！")
         print(f"📂 你的 GGUF 文件就在这里: {os.path.abspath(args.output)}")
