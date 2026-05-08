@@ -1,11 +1,12 @@
 import discord
 import requests
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-OLLAMA_URL = "https://competition-showed-sticker-paperback.trycloudflare.com/api/generate"
+OLLAMA_URL = "https://competition-showed-sticker-paperback.trycloudflare.com/api/chat"
 MODEL_NAME = "mytwin"
 
 intents = discord.Intents.default()
@@ -15,6 +16,13 @@ client = discord.Client(intents=intents)
 # 🔥 核心改动：用字典记录每个人的专属对话历史
 # 格式: { 用户ID: "历史记录字符串" }
 user_histories = {}
+
+# Helper to keep the list clean
+def add_to_memory(user_id, role, content):
+    if user_id not in user_histories:
+        user_histories[user_id] = []
+    
+    user_histories[user_id].append({"role": role, "content": content})
 
 @client.event
 async def on_ready():
@@ -29,50 +37,37 @@ async def on_message(message):
         async with message.channel.typing():
             user_id = message.author.id
             
-            # 如果是新用户，初始化他的记忆库
+
             if user_id not in user_histories:
-                user_histories[user_id] = ""
-            
-            current_history = user_histories[user_id]
+                user_histories[user_id] = []
 
-            # ==========================================
-            # 1. 记忆压缩系统 (你超棒的 Idea)
-            # ==========================================
-            if len(current_history) > 1000:
-                print(f"🧹 记忆过长，正在压缩 {message.author.name} 的对话...")
-                summary_prompt = "Please summarize the conversation below in under 50 words, keeping the main context:\n" + current_history
-                
-                sum_resp = requests.post(OLLAMA_URL, json={
-                    "model": MODEL_NAME,
-                    "prompt": summary_prompt,
-                    "stream": False
-                })
-                # 正确提取总结的文字
-                summary_text = sum_resp.json().get('response', '')
-                current_history = f"[之前的对话总结: {summary_text}]\n"
+            # 1. Memory Compression (Check number of messages, e.g., > 20 messages)
+            if len(user_histories[user_id]) > 20:
+                print(f"🧹 Memory full for {message.author.name}, compressing...")
+                # You'd send the list to a summarizer here, then reset the list
+                # For now, let's just keep the last 10 to keep it simple
+                user_histories[user_id] = user_histories[user_id][-10:]
 
-            # ==========================================
-            # 2. 拼接新对话并请求 AI
-            # ==========================================
-            # 清理掉 @ 机器人的无用字符
+            # 2. Add the NEW message from the user
             clean_msg = message.content.replace(f'<@!{client.user.id}>', '').replace(f'<@{client.user.id}>', '').strip()
-            
-            # 加上 User 和 Twin 的前缀，让模型知道谁在说话
-            current_history += f"User: {clean_msg}\nTwin:"
+            # We tag the name so the model knows who is talking (as we discussed)
+            add_to_memory(user_id, "user", clean_msg)
             
             response = requests.post(OLLAMA_URL, json={
                 "model": MODEL_NAME,
-                "prompt": current_history,
-                "stream": False
+                "prompt": user_histories[user_id],
+                "stream": False,
+                "options": {
+                    "stop": ["User:", "\nUser:", "Assistant:", "\nAssistant:"] 
+                }
             })
             
-            answer = response.json().get('response', '我断网了...')
+            answer = response.json().get('message', {}, '我断网了...')
 
             # ==========================================
             # 3. 存储 AI 的回答并更新记忆
             # ==========================================
-            current_history += f" {answer}\n"
-            user_histories[user_id] = current_history # 存回字典里
+            add_to_memory(user_id, "assistant", answer)
 
             await message.reply(answer)
 
