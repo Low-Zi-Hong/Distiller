@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import aiohttp
 
-useDeepSeek = True
+useDeepSeek = False
 
 user_histories = {}
 
@@ -137,7 +137,20 @@ async def on_message(message):
 
             # 1. Memory Compression (Check number of messages, e.g., > 20 messages)
             if len(user_histories[user_id]) > 20:
-                user_histories[user_id] = await summarise_memory(message,user_histories)
+                if(useDeepSeek):
+                    user_histories[user_id] = await summarise_memory(message,user_histories)
+                else:
+                    response = requests.post(OLLAMA_URL, json={
+                        "model": MODEL_NAME,
+                        "messages":  {
+                            "content": "You are a summariser. Summerise the below conversation to a short description about what is going on.",
+                            "role": "system"
+                            } + user_histories[user_id],
+                        "stream": False
+                    memory = [{"role" : "assistant", "content" : response.json().get("message",{}).get("content",{})}] +  us[user_id][-4:]
+                    user_histories[user_id] = memory
+            })
+
 
             # 2. Add the NEW message from the user
             clean_msg = message.content.replace(f'<@!{client.user.id}>', '').replace(f'<@{client.user.id}>', '').strip()
