@@ -31,7 +31,7 @@ Tasks:
 Updated summary:"""
 
     response = _client.chat.completions.create(
-        model=SUMMARIZE_MODEL,
+        model=DEEPSEEK_MODEL,
         messages=[{"role": "user", "content": prompt}],
         max_tokens=500,
         temperature=0.3,

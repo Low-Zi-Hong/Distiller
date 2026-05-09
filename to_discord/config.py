@@ -43,7 +43,7 @@ PERSONALITIES = {
 SHORT_TERM_LIMIT  = 10
 MAX_STORED_FACTS  = 30
 
-# ── API ──────────────────────────────────────────────────────────────────
+# ── API keys ──────────────────────────────────────────────────────────────────
 DISCORD_TOKEN     = ""
 DEEPSEEK_API_KEY  = ""
 DEEPSEEK_MODEL    = ""
