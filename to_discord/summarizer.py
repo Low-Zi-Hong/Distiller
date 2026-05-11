@@ -1,6 +1,6 @@
 import asyncio
 from openai import OpenAI
-from config import DEEPSEEK_API_KEY, DEEPSEEK_MODEL, MAX_STORED_FACTS
+from config import DEEPSEEK_API_KEY, DEEPSEEK_MODEL
 
 _client = OpenAI(
     api_key=DEEPSEEK_API_KEY,
@@ -22,34 +22,17 @@ Existing summary:
 New conversation turns:
 {turns_text}
 
-Tasks:
-1. Write a concise updated summary (3-5 sentences) merging old + new.
-2. List any important NEW facts about the user (name, preferences, topics discussed).
-   Format: FACTS: fact1 | fact2 | ...
-   Write FACTS: none  if nothing new.
-
-Updated summary:"""
+Write a concise updated summary (3-5 sentences) merging the old summary with the new turns.
+Return only the summary text, nothing else."""
 
     response = _client.chat.completions.create(
         model=DEEPSEEK_MODEL,
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=500,
+        max_tokens=300,
         temperature=0.3,
     )
 
-    text = response.choices[0].message.content.strip()
-    lines = text.split("\n")
-    facts_line    = next((l for l in lines if l.startswith("FACTS:")), "FACTS: none")
-    summary_lines = [l for l in lines if not l.startswith("FACTS:")]
-
-    memory.summary = "\n".join(summary_lines).strip()
-
-    raw_facts = facts_line.replace("FACTS:", "").strip()
-    if raw_facts.lower() != "none":
-        new_facts = [f.strip() for f in raw_facts.split("|") if f.strip()]
-        memory.facts.extend(new_facts)
-        memory.facts = memory.facts[-MAX_STORED_FACTS:]
-
+    memory.summary = response.choices[0].message.content.strip()
     memory.short_term.clear()
     memory.save()
 
