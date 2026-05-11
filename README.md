@@ -99,11 +99,11 @@ You can also inspect your conversation between the model's memory conversation, 
 
 ### Commands
 
-`!currentmodel` Shows active personality and model tag
-`!listmodel` Lists all personalities
-`!change` <name> Switches active personality
-`!memory` Shows your current summary + recent turns for the active model
-`!memoryclear` Wipes your memory for the active model, fresh start
+* `!currentmodel` Shows active personality and model tag
+* `!listmodel` Lists all personalities
+* `!change` <name> Switches active personality
+* `!memory` Shows your current summary + recent turns for the active model
+* `!memoryclear` Wipes your memory for the active model, fresh start
 
 ---
 
@@ -122,6 +122,9 @@ You can also inspect your conversation between the model's memory conversation, 
 ---
 
 ## Version History
+
+* **0.2**
+    * Discord model bot: Added discord model bot with improved memories integration to serve ollama model to discord.
 
 * **0.1**
     * Initial Release: Added WhatsApp/Discord processors, Unsloth trainer, and GGUF exporter.
