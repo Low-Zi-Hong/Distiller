@@ -1,15 +1,6 @@
 # ── Active model (changes at runtime via !change) ──────────────────────────
 ACTIVE_MODEL = "rl_pro"   # must match a key in PERSONALITIES
 
-# ── Trusted bots whose mentions the bot will respond to ───────────────────
-# Add the Discord user ID of your MC bridge bot here
-BOT_ROLE_IDS = {
-    1497900338370314340,   # pulled directly from your MC bot's message
-}
-TRUSTED_BOT_IDS = {
-    948819629093040148,   # whichever ID printed above
-}
-
 # ── Personality definitions ────────────────────────────────────────────────
 # Add as many as you want. Each entry:
 #   "index_name"  → what you type in !change and !listmodel
