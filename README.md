@@ -77,6 +77,8 @@ You can also inspect your conversation between the model's memory conversation, 
 
 *Notes: The memory of a model is stored with the conversation per users!*
 
+---
+
 ### How to use?
 
 1.  **Configure your model bot:**
@@ -102,6 +104,8 @@ You can also inspect your conversation between the model's memory conversation, 
 `!change` <name> Switches active personality
 `!memory` Shows your current summary + recent turns for the active model
 `!memoryclear` Wipes your memory for the active model, fresh start
+
+---
 
 ## Help
 
