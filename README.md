@@ -62,6 +62,47 @@ A pipeline to distill your personal chat history into a localized AI "Digital Tw
 
 ---
 
+## Discord bot model
+
+### Description
+
+`to_discord.py` is a script to serve imported gguf ollama model to serve to discord by discord bot.
+
+### Functions
+
+By mentioning or replying to the discord bot, the bot will get responses from ollama, sending and receiving message to discord.
+Having the bot to have conversation memory per user will make the conversation feels logic. By summarization with a proper summarizer model, it will further enhance the memory while not exploding the ram usage.
+This bot also supports multiple models as long as it's available from ollama. Changing models in discord is also available.
+You can also inspect your conversation between the model's memory conversation, as well as resetting the memory by clearing it.
+
+*Notes: The memory of a model is stored with the conversation per users!*
+
+### How to use?
+
+1.  **Configure your model bot:**
+    `config.py` let you configure the discord bot. Insert your discord bot token and deepseek token in the `config.py`. Next, configure the personality settings like the ollama models, system prompt as well as the   model name.
+
+2. **Run your model bot:**
+    Run `to_discord.py` and you are done! `memories` folder will be created.
+
+3. **Using your model bot:**
+    First, mention your model bot, then start the conversation. You will see the bot is typing if set up correctly. Depending on your specs, the time taken to receive message varies.
+    You can also reply with the model bot to continue the conversation.
+
+4. **Changing model:**
+    By using the command `!change <modelname>`, you can change to another model configured. The bot will have a new memory created between you.
+
+5. **Memory Inspection:**
+    You can use `!memory` to check the memory of the conversation between you and the model. Use `!memoryclear` to clear the memory only on your conversation between the model.
+
+### Commands
+
+`!currentmodel` Shows active personality and model tag
+`!listmodel` Lists all personalities
+`!change` <name> Switches active personality
+`!memory` Shows your current summary + recent turns for the active model
+`!memoryclear` Wipes your memory for the active model, fresh start
+
 ## Help
 
 * **ModuleNotFoundError**: Ensure you have installed `python-dotenv` if the bot fails to start.
