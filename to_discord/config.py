@@ -6,10 +6,8 @@ ACTIVE_MODEL = "rl_pro"   # must match a key in PERSONALITIES
 #   "index_name"  → what you type in !change and !listmodel
 #   ollama_model  → the actual Ollama model tag
 #   display_name  → shown as the webhook username in Discord
-#   avatar_url    → direct image URL (Discord CDN, imgur, etc.)
 #   system_prompt → personality instructions
 
-# Examples, please change this if you have different model name
 PERSONALITIES = {
     "rl_pro": {
         "ollama_model":   "RL_pro",
@@ -37,13 +35,18 @@ PERSONALITIES = {
         Sometimes lazy and get annoyed, gets involved in arguing
         """,
     },
+    "chinyijin": {
+        "ollama_model":   "chinyijin",
+        "display_name":   "Chin Yi Jin",
+        "system_prompt":  """You are Chin Yi Jin, good at math, likes to play games, especially honkai star rail, wangzhe,
+        and sometimes a pervert that shares 6 digit code.""",
+    },
 }
 
 # ── Memory settings ────────────────────────────────────────────────────────
 SHORT_TERM_LIMIT  = 10
-MAX_STORED_FACTS  = 30
 
 # ── API keys ──────────────────────────────────────────────────────────────────
 DISCORD_TOKEN     = ""
 DEEPSEEK_API_KEY  = ""
-DEEPSEEK_MODEL    = ""
+DEEPSEEK_MODEL    = "deepseek-v4-flash"

@@ -27,6 +27,7 @@ def get_memory(user_id: str) -> UserMemory:
     return _memories[key]
 
 def should_respond(message: discord.Message) -> bool:
+    
     if client.user in message.mentions:
         return True
     if (
@@ -104,13 +105,43 @@ async def cmd_change(message: discord.Message, args: list[str]):
     name = args[0].lower()
     if name not in PERSONALITIES:
         valid = ", ".join(f"`{k}`" for k in PERSONALITIES)
-        await message.reply(f"Unknown personality `{name}`. Valid options: {valid}")
+        await message.reply(f"Unknown model `{name}`. Valid options: {valid}")
         return
     _active_key = name
     p = PERSONALITIES[name]
     await message.reply(
         f"Switched to **{p['display_name']}** (`{p['ollama_model']}`). "
-        f"Memory is isolated — this personality remembers its own conversations."
+    )
+
+async def cmd_memory(message: discord.Message):
+    user_id = str(message.author.id)
+    mem     = get_memory(user_id)
+
+    parts = []
+
+    if mem.summary:
+        parts.append(f"**Long-term summary:**\n{mem.summary}")
+    else:
+        parts.append("**Long-term summary:** none yet.")
+
+    if mem.short_term:
+        recent_lines = [
+            f"[{m['role']}]: {m['content'][:80]}{'...' if len(m['content']) > 80 else ''}"
+            for m in mem.short_term
+        ]
+        parts.append("**Recent turns (short-term):**\n" + "\n".join(recent_lines))
+    else:
+        parts.append("**Recent turns (short-term):** none.")
+
+    await send_reply_chunked(message, "\n\n".join(parts))
+
+async def cmd_memoryclear(message: discord.Message):
+    user_id = str(message.author.id)
+    mem     = get_memory(user_id)
+    p       = get_personality()
+    mem.clear()
+    await message.reply(
+        f"Memory cleared between you with **{p['display_name']}**. "
     )
 
 # ── Main event ─────────────────────────────────────────────────────────────
@@ -138,6 +169,14 @@ async def on_message(message: discord.Message):
     if content.startswith("!change"):
         args = content.split()[1:]
         await cmd_change(message, args)
+        return
+
+    if content.startswith("!memory") and not content.startswith("!memoryclear"):
+        await cmd_memory(message)
+        return
+
+    if content.startswith("!memoryclear"):
+        await cmd_memoryclear(message)
         return
 
     # ── conversation ───────────────────────────────────────────
